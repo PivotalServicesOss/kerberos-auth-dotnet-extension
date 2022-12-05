@@ -1,6 +1,12 @@
 # kerberos-auth-dotnet-extension
 
-A simple library to add kerberos auth for a dotnet app running in a non domain joined linux container. Most of the code is copied from Andrew Stackhov's [Kerberos Buildpack](https://github.com/macsux/kerberos-buildpack) repo, and thanks to Andrew for all the research and code he had done for this. 
+A simple library to add kerberos auth capabilities (mentioned below) for a dotnet app running in a non domain joined linux container. Most of the code is copied from Andrew Stackhov's [Kerberos Buildpack](https://github.com/macsux/kerberos-buildpack) repo, and thanks to Andrew for all the research and code he had done for this. 
+
+### Capabilities (High level)
+
+1. Create kerberos configuration file
+1. Create kerberos keytab file based on the given service account credentials
+1. Refreshes the tickets
 
 > Important Note:  I just created this library for my personal use, but incase you need more info, you can always refer to the original code that Andrew has on his repo. You can also check [NMica.Security](https://github.com/NMica/NMica.Security)
 
@@ -34,13 +40,22 @@ A simple library to add kerberos auth for a dotnet app running in a non domain j
     </ItemGroup>
     ```
 
-1. Add the below code to the application's `startup/program.cs`
+1. Add the below code to the application's `startup/program.cs`, which will add the necessary services for handling kerberos client management
 
     ```c#
     using Kerberos.Client.Manager;
     ...
     if (Platform.IsLinux)
         builder.Services.AddKerberosClientManagement(builder.Configuration);
+    ```
+1. Add the below code to the application's `startup/program.cs`, which remove swagger documentation of diagnostics controller, when environment variable `KRB_ENABLE_DIAGNOSTICS_ENDPOINTS` is set to false.
+
+    ```c#
+    using Kerberos.Client.Manager;
+    ...
+    builder.Services.AddSwaggerGen(options => {
+        options.DocumentFilter<KerberosDiagnosticsDocumentFilter>();
+    });
     ```
 
 1. Below are the environment variables used by the kerberos manager. This needs to be set when running the app. For local use, you can setup in `launchsettings.json`
