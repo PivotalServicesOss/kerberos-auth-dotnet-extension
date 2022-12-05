@@ -67,7 +67,7 @@ A simple library to add kerberos auth for a dotnet app running in a non domain j
 
 ### Running your application
 
-1. To run the application using docker, use the below command. Add `--env KRB5_TRACE=/dev/stdout --env KRB_ENABLE_DIAGNOSTICS_ENDPOINTS=true` for kerberos tracing and diagnostics in lower environment.
+1. To run the application using [docker](https://www.docker.com/products/docker-desktop/), use the below command. Add `--env KRB5_TRACE=/dev/stdout --env KRB_ENABLE_DIAGNOSTICS_ENDPOINTS=true` for kerberos tracing and diagnostics in lower environment.
 
     ```bash
     docker run --env ASPNETCORE_ENVIRONMENT=Development --env KRB5_CONFIG=/<user home directory in container>/krb5.conf --env KRB5CCNAME=/<user home directory in container>/krb5cc --env KRB5_KTNAME=/<user home directory in container>/krb5.keytab --env KRB5_CLIENT_KTNAME=/<user home directory in container>/krb5.keytab  --env KRB_SERVICE_ACCOUNT=sa1@MYDOMAINNAME.COM --env KRB_PASSWORD=P@ssw0rd_ --env KRB_KDC=ADAUTH.MYDOMAINNAME.COM -p 8085:8080 <docker image name>:<docker image tag>
