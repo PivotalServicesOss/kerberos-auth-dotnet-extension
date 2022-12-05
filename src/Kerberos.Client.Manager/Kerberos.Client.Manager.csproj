@@ -1,0 +1,45 @@
+<Project Sdk="Microsoft.NET.Sdk.Web">
+
+  <PropertyGroup>
+    <TargetFramework>net6.0</TargetFramework>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <Nullable>disable</Nullable>
+    <OutputType>Library</OutputType>
+    <RootNamespace>Kerberos.Client.Manager</RootNamespace>
+    <DebugType>Embedded</DebugType>
+    <EmbedAllSources>true</EmbedAllSources>
+    <UpdateAssemblyInfo>true</UpdateAssemblyInfo>
+    <UpdateVersionProperties>true</UpdateVersionProperties>
+    <IsPackable>true</IsPackable>
+    <NoWarn>$(NoWarn);1591</NoWarn>
+    <GenerateDocumentationFile>true</GenerateDocumentationFile>
+  </PropertyGroup>
+
+  <PropertyGroup>
+    <PackageId>Kerberos.Client.Manager</PackageId>
+    <Title>Kerberos.Client.Manager</Title>
+    <Version>1.0.0</Version>
+    <Authors>ajaganathan</Authors>
+    <Company>VMware</Company>
+    <PackageRequireLicenseAcceptance>true</PackageRequireLicenseAcceptance>
+    <PackageLicenseExpression>MIT</PackageLicenseExpression>
+    <Copyright>All rights reserved.</Copyright>
+    <RepositoryUrl>https://github.com/alfusinigoj/kerberos-auth-dotnet-extension.git</RepositoryUrl>
+    <RepositoryType>git</RepositoryType>
+    <PackageTags>ASP.NET;Handlers;IoC;Autofac;Unity</PackageTags>
+    <Description>A simple library to add kerberos auth for a dotnet app running in a linux container that is not domain joined</Description>
+    <PackageProjectUrl>https://github.com/alfusinigoj/kerberos-auth-dotnet-extension</PackageProjectUrl>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <PackageReference Include="Kerberos.NET" Version="4.5.155" />
+    <PackageReference Include="Microsoft.Extensions.Options" Version="6.0.0" />
+    <PackageReference Include="Microsoft.Extensions.Logging" Version="6.0.0" />
+    <PackageReference Include="Microsoft.Extensions.Configuration" Version="6.0.0" />
+    <PackageReference Include="Microsoft.Extensions.Options.ConfigurationExtensions " Version="6.0.0" />
+    <PackageReference Include="Microsoft.Data.SqlClient" Version="4.1.0" />
+    <PackageReference Include="Dapper" Version="2.0.123" />
+    <PackageReference Include="Microsoft.FeatureManagement.AspNetCore" Version="3.0.0-preview" />
+  </ItemGroup>
+
+</Project>
