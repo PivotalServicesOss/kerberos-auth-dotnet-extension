@@ -1,6 +1,6 @@
 # kerberos-auth-dotnet-extension
 
-A simple library to add kerberos auth for a dotnet app running in a non domain joined linux container. Most of the code is copied from Andrew Stackhov's [Kerberos Buildpack](https://github.com/macsux/kerberos-buildpack) repo. 
+A simple library to add kerberos auth for a dotnet app running in a non domain joined linux container. Most of the code is copied from Andrew Stackhov's [Kerberos Buildpack](https://github.com/macsux/kerberos-buildpack) repo, and thanks to Andrew for all the research and code he had done for this. 
 
 > Important Note:  I just created this library for my personal use, but incase you need more info, you can always refer to the original code that Andrew has on his repo. You can also check [NMica.Security](https://github.com/NMica/NMica.Security)
 
