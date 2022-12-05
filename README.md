@@ -96,7 +96,7 @@ SetSpn -S http/<app host name> <domain\service_account_name>
 SetSpn -L <domain\service_account_name>
 ```
 
-1. In your browser, inter options, add the site as `fully trusted`, where the application should be exposing url with `https` scheme.
+1. In your browser settings or internet options, add the site as `fully trusted`, where the application should be exposing url with `https` scheme.
 
 > For any other errors, follow the kerberos diagnostics trace and fix the issues as needed.
 
