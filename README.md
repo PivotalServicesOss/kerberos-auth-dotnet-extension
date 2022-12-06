@@ -13,6 +13,8 @@ A simple library to add kerberos auth capabilities (mentioned below) for a dotne
 
 ## Getting started
 
+> This repo contains a working sample, for any quick reference.
+
 ### Building the library as a nuget package
 
 1. Clone the repo down to your local
