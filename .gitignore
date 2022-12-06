@@ -450,4 +450,4 @@ MigrationBackup/
 
 .DS_Store
 *.orig
-publish-artifacts
+publish-artifacts/

@@ -4,7 +4,7 @@ properties {
   $base_dir = resolve-path .
   $publish_dir = "$base_dir\publish-artifacts"
   $solution_file = "$base_dir\$solution_name.sln"
-  $local_nuget_repo = "/Users/ajaganathan/mylocalnugetrepo"
+  $local_nuget_repo = "/Users/ajaganathan/.nugetrepo"
   $remote_nuget_repo = "https://api.nuget.org/v3/index.json"
   $date = Get-Date
   $dotnet_exe = get-dotnet
@@ -99,9 +99,16 @@ task Push2Local -depends Pack {
 	Push-Location $base_dir
 	$packages = @(Get-ChildItem -Recurse -Filter "*.nupkg" | Where-Object {$_.Directory -like "*publish-artifacts*"}).FullName
 
+    if (Test-Path $local_nuget_repo) {
+        Write-Host "Repo $local_nuget_repo already exists"
+    }
+    else {
+        create_directory $local_nuget_repo
+    }
+
 	foreach ($package in $packages) {
 		Write-Host "Executing nuget add for the package: $package"
-		exec { & $dotnet_exe nuget add $package -Source $local_nuget_repo -Force}
+		exec { & $dotnet_exe nuget push $package -s $local_nuget_repo}
         Write-Host "Warning: Possible overwrite of existing package $package, possible solution is to clear the cache(S)" -ForegroungColor Yellow
 	}
 
@@ -115,7 +122,7 @@ task Push2Nuget {
 
 	foreach ($package in $packages) {
 		Write-Host "Executing nuget push for the package: $package"
-		exec { & $dotnet_exe nuget push $package -Source $remote_nuget_repo -ApiKey $api_key}
+		exec { & $dotnet_exe nuget push $package -s $remote_nuget_repo -k $api_key}
 	}
 
 	Pop-Location
@@ -166,6 +173,11 @@ function global:delete_file($file) {
 function global:delete_directory($directory_name)
 {
   rd $directory_name -recurse -force  -ErrorAction SilentlyContinue | out-null
+}
+
+function global:create_directory($directory_name)
+{
+  mkdir $directory_name -force -ErrorAction SilentlyContinue | out-null
 }
 
 function global:get-dotnet(){

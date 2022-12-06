@@ -8,7 +8,6 @@ using Kerberos.NET.Transport;
 using Microsoft.Extensions.Options;
 using Kerberos.NET.Configuration;
 using Microsoft.FeatureManagement;
-using Kerberos.NET.Crypto;
 
 namespace Kerberos.Client.Manager;
 
@@ -31,6 +30,10 @@ public static class Extensions
             .PostConfigure<ILoggerFactory>((options, loggerFactory) =>
             {
                 var logger = loggerFactory.CreateLogger("KerberosExtensions");
+
+                if (options.ApplicationHostName == null)
+                    logger.LogWarning("Service/Application hostname is not set. Use APP_HOSTNAME environmental variable to configure windows ingress authentication");
+
                 var homeDir = Environment.GetFolderPath(Environment.SpecialFolder.UserProfile);
                 var userKerbDir = Path.Combine(homeDir, ".krb5");
 
@@ -71,9 +74,6 @@ public static class Extensions
                     config.Defaults.DefaultCCacheName = options.CacheFile;
                     config.Defaults.DefaultKeytabName = options.KeytabFile;
                     config.Defaults.DefaultClientKeytabName = options.KeytabFile;
-                    // config.Defaults.DnsLookupKdc = true;
-                    // AddEncryptionTypes(config.Defaults.DefaultTgsEncTypes);
-                    // AddEncryptionTypes(config.Defaults.DefaultTicketEncTypes);
                 }
                 else
                 {
@@ -93,14 +93,6 @@ public static class Extensions
         services.AddHostedService<KerberosWorker>();
         services.AddFeatureManagement(configuration);
         return services;
-    }
-
-    private static void AddEncryptionTypes(ICollection<EncryptionType> encryptionTypes)
-    {
-        encryptionTypes.Add(EncryptionType.AES256_CTS_HMAC_SHA1_96_PLAIN);
-        encryptionTypes.Add(EncryptionType.AES256_CTS_HMAC_SHA1_96);
-        encryptionTypes.Add(EncryptionType.AES256_CTS_HMAC_SHA384_192);
-        encryptionTypes.Add(EncryptionType.DES_CBC_MD5);
     }
 
     internal static async Task LoadSalts(this KerberosCredential credential, CancellationToken cancellationToken)

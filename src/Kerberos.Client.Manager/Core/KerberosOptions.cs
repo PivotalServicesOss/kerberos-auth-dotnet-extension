@@ -92,10 +92,6 @@ public class KerberosOptions
             {
                 errors.Add("Service password is not set. Use KRB_PASSWORD environmental variable to configure");
             }
-            if (options.ApplicationHostName == null)
-            {
-                errors.Add("Service/Application hostname is not set. Use APP_HOSTNAME environmental variable to configure");
-            }
             if (options.Kdc == null && options.GenerateKrb5)
             {
                 errors.Add("KDC is not configured");

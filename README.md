@@ -2,13 +2,14 @@
 
 A simple library to add kerberos auth capabilities (mentioned below) for a dotnet app running in a non domain joined linux container. Most of the code is copied from Andrew Stackhov's [Kerberos Buildpack](https://github.com/macsux/kerberos-buildpack) repo, and thanks to Andrew for all the research and code he had done for this. 
 
-### Capabilities (High level)
+### Features
 
 1. Create kerberos configuration file
 1. Create kerberos keytab file based on the given service account credentials
-1. Refreshes the tickets
+1. Obtain the ticket and stores in cache
+1. Refreshes the ticket to keep it updated
 
-> Important Note:  I just created this library for my personal use, but incase you need more info, you can always refer to the original code that Andrew has on his repo. You can also check [NMica.Security](https://github.com/NMica/NMica.Security)
+> Important Note:  I just created this library for my personal use, but incase you need more info, you can always refer to the original code that Andrew has on his repo. You can also check [NMica.Security](https://github.com/NMica/NMica.Security) for a better library to take away the burden of authentication from the application as a gateway/proxy.
 
 ## Getting started
 
@@ -62,15 +63,15 @@ A simple library to add kerberos auth capabilities (mentioned below) for a dotne
 
     ```json
     {
-        "KRB_ENABLE_DIAGNOSTICS_ENDPOINTS": , //whether diagnostics controller needs to be exposed (set false in prod environment)
-        "KRB5_CONFIG": "/<user home directory in container>/.krb5/krb5.conf", 
-        "KRB5CCNAME": "/<user home directory in container>/.krb5/krb5cc",
-        "KRB5_KTNAME": "/<user home directory in container>/.krb5/krb5.keytab",
-        "KRB5_CLIENT_KTNAME": "/<user home directory in container>/.krb5/krb5.keytab",
+        "KRB_ENABLE_DIAGNOSTICS_ENDPOINTS": false, //whether diagnostics controller needs to be exposed (set false in prod environment)
+        "KRB5_CONFIG": "/<user home directory in container>/.krb5/krb5.conf", //kerberos config file
+        "KRB5CCNAME": "/<user home directory in container>/.krb5/krb5cc", //kerberos ticket cache file
+        "KRB5_KTNAME": "/<user home directory in container>/.krb5/krb5.keytab", //kerberos keytab file
+        "KRB5_CLIENT_KTNAME": "/<user home directory in container>/.krb5/krb5.keytab", //kerberos keytab file
         "KRB_PASSWORD": "", //service account password
         "KRB_SERVICE_ACCOUNT": "", //service account name e.g. sa1@MYDOMAINNAME.COM
         "KRB_KDC": "", //kdc domain name e.g. ADAUTH.MYDOMAINNAME.COM
-        "APP_HOSTNAME": "" //application host name e.g. myapp.mydomain.com (for the case if app url is https://myapp.mydomain.com)
+        "APP_HOSTNAME": "" //application host name e.g. myapp.mydomain.com (for the case if app url is https://myapp.mydomain.com). This is mandatory only for windows ingress authentication
     }
     ```
 
@@ -98,7 +99,7 @@ A simple library to add kerberos auth capabilities (mentioned below) for a dotne
 
 1. Identify the service account for which the application should be running under (imagine as your application running in IIS on an APP POOL, under a service account). It is the one you setup earlier via environment variable `KRB_SERVICE_ACCOUNT`. 
 
-1. The `<app host name >` below is the one you setup earlier via environment variable `APP_HOSTNAME`
+1. The `<app host name >` below is the one you setup earlier via environment variable `APP_HOSTNAME`, which is a mandatory configuration variable
 
 1. Execute the below command to create the spn
 
@@ -114,6 +115,8 @@ SetSpn -L <domain\service_account_name>
 1. In your browser settings or internet options, add the site as `fully trusted`, where the application should be exposing url with `https` scheme.
 
 > For any other errors, follow the kerberos diagnostics trace and fix the issues as needed.
+
+> Alternatively, a simple sidecar container using this library or using [Andrew's sidecar](https://github.com/macsux/kerberos-buildpack/tree/main/src/KerberosSidecar) which can share the kerberos files via a mounted volume will work. The app can also be hosted as a seperate service which can share the kerberos files via a namespace level shared volume.
 
 ## Other things that I had to do in my labs environment
 
