@@ -1,11 +1,12 @@
 using Kerberos.Client.Manager;
 using Microsoft.AspNetCore.Authentication.Negotiate;
 using Steeltoe.Common;
+using Microsoft.FeatureManagement;
 
 var builder = WebApplication.CreateBuilder(args);
 
-if (Platform.IsLinux || Platform.IsOSX)
-    builder.Services.AddKerberosClientManagement(builder.Configuration);
+builder.Services.AddFeatureManagement(configuration);
+builder.Services.AddKerberosClientManagement(builder.Configuration);
 
 builder.Services.AddAuthentication(NegotiateDefaults.AuthenticationScheme).AddNegotiate();
 

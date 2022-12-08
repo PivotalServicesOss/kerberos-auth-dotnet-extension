@@ -46,10 +46,11 @@ A simple library to add kerberos auth capabilities (mentioned below) for a dotne
 1. Add the below code to the application's `startup/program.cs`, which will add the necessary services for handling kerberos client management
 
     ```c#
+    using Microsoft.FeatureManagement;
     using Kerberos.Client.Manager;
     ...
-    if (Platform.IsLinux)
-        builder.Services.AddKerberosClientManagement(builder.Configuration);
+    builder.Services.AddFeatureManagement(configuration);
+    builder.Services.AddKerberosClientManagement(builder.Configuration);
     ```
 1. Add the below code to the application's `startup/program.cs`, which remove swagger documentation of diagnostics controller, when environment variable `KRB_ENABLE_DIAGNOSTICS_ENDPOINTS` is set to false.
 
