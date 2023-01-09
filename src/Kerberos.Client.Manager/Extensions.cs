@@ -34,23 +34,20 @@ public static class Extensions
                 if (options.ApplicationHostName == null)
                     logger.LogWarning("Service/Application hostname is not set. Use APP_HOSTNAME environmental variable to configure windows ingress authentication");
 
-                var homeDir = Environment.GetFolderPath(Environment.SpecialFolder.UserProfile);
-                var userKerbDir = Path.Combine(homeDir, ".krb5");
-
-                // default files to user's ~/.krb/ folder if not set
-                options.Kerb5ConfigFile ??= Path.Combine(userKerbDir, "krb5.conf");
-                options.KeytabFile ??= Path.Combine(userKerbDir, "krb5.keytab");
-                options.CacheFile ??= Path.Combine(userKerbDir, "krb5cc");
                 options.GenerateKrb5 = options.Kerb5ConfigFile == null! || !File.Exists(options.Kerb5ConfigFile);
 
                 Directory.CreateDirectory(Path.GetDirectoryName(options.Kerb5ConfigFile)!);
                 Directory.CreateDirectory(Path.GetDirectoryName(options.KeytabFile)!);
                 Directory.CreateDirectory(Path.GetDirectoryName(options.CacheFile)!);
 
+                logger.LogDebug($"Kerb5 Config File - {options.Kerb5ConfigFile}");
+                logger.LogDebug($"Kerb5 Keytab File - {options.KeytabFile}");
+                logger.LogDebug($"Kerb5 Cache File - {options.CacheFile}");
+
                 Krb5Config config;
                 if (options.GenerateKrb5)
                 {
-                    logger.LogInformation("No krb5.conf exists - generating");
+                    logger.LogInformation($"No krb5.conf exists - generating {options.KeytabFile}");
                     config = Krb5Config.Default();
                     string realm;
                     try
