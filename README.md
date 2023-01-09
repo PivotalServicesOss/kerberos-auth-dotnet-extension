@@ -4,7 +4,7 @@ A simple library to add kerberos auth capabilities (mentioned below) for a dotne
 
 ### Features
 
-1. Create kerberos configuration file
+1. Create kerberos configuration file, if not exists (preferable to use an existing one instead of defaults)
 1. Create kerberos keytab file based on the given service account credentials
 1. Obtain the ticket and stores in cache
 1. Refreshes the ticket to keep it updated

@@ -9,6 +9,7 @@ properties {
   $date = Get-Date
   $dotnet_exe = get-dotnet
   $target_frameworks = "net6.0"
+  $version = get_version
 }
 
 #These are aliases for other build tasks. They typically are named after the camelcase letters (rd = Rebuild Databases)
@@ -28,6 +29,15 @@ task emitProperties {
   Write-Host "test_dir=$test_dir"
   Write-Host "publish_dir=$publish_dir"
   Write-Host "project_config=$project_config"
+
+  Write-Host "base_dir=$base_dir"
+  Write-Host "publish_dir=$publish_dir"
+  Write-Host "solution_file=$solution_file"
+  Write-Host "local_nuget_repo=$local_nuget_repo"
+  Write-Host "remote_nuget_repo=$remote_nuget_repo"
+  Write-Host "date=$date"
+  Write-Host "target_frameworks=$target_frameworks"
+  Write-Host "version=$version"
 }
 
 task help {
@@ -182,6 +192,12 @@ function global:create_directory($directory_name)
 
 function global:get-dotnet(){
 	return (Get-Command dotnet).Path
+}
+
+function global:get_version()
+{
+    & $dotnet_exe tool install --global GitVersion.Tool
+    return exec { gitversion /output json /showvariable FullSemVer }
 }
 
 
