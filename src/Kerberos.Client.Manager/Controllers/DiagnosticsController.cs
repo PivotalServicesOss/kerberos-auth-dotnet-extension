@@ -1,4 +1,4 @@
-﻿// Original copied from https://github.com/macsux/kerberos-buildpack/tree/main/src/KerberosSidecar
+﻿// Original file https://github.com/macsux/kerberos-buildpack/tree/main/src/KerberosSidecar
 
 using System.Collections;
 using System.Diagnostics;
@@ -11,7 +11,7 @@ using Dapper;
 using Microsoft.Extensions.Options;
 using Microsoft.FeatureManagement.Mvc;
 
-namespace Kerberos.Client.Manager;
+namespace PivotalServices.Kerberos.Client.Manager;
 
 [ApiController]
 [Route("kerberos/[controller]")]

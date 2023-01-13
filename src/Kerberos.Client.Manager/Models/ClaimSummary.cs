@@ -1,6 +1,6 @@
-﻿// Original copied from https://github.com/macsux/kerberos-buildpack/tree/main/src/KerberosSidecar
+﻿// Original file https://github.com/macsux/kerberos-buildpack/tree/main/src/KerberosSidecar
 
-namespace Kerberos.Client.Manager;
+namespace PivotalServices.Kerberos.Client.Manager;
 
 public class ClaimSummary
 {

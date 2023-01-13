@@ -6,10 +6,8 @@ properties {
   $solution_file = "$base_dir\$solution_name.sln"
   $local_nuget_repo = "/Users/ajaganathan/.nugetrepo"
   $remote_nuget_repo = "https://api.nuget.org/v3/index.json"
-  $date = Get-Date
-  $dotnet_exe = get-dotnet
-  $target_frameworks = "net6.0"
-  $version = get_version
+  $remote_myget_repo = "https://www.myget.org/F/pivotalservicesoss/api/v3/index.json"
+  $date = Get-Date 
 }
 
 #These are aliases for other build tasks. They typically are named after the camelcase letters (rd = Rebuild Databases)
@@ -19,25 +17,16 @@ task cipk -depends CiPack
 task dpk -depends DevPack
 task dr -depends DevPublish
 task cirn -depends CiPublish2Nuget
+task cirm -depends CiPublish2Myget
 task ? -depends help
 
 
 task emitProperties {
   Write-Host "solution_name=$solution_name"
-  Write-Host "build_dir=$build_dir"
   Write-Host "solution_file=$solution_file"
   Write-Host "test_dir=$test_dir"
   Write-Host "publish_dir=$publish_dir"
   Write-Host "project_config=$project_config"
-
-  Write-Host "base_dir=$base_dir"
-  Write-Host "publish_dir=$publish_dir"
-  Write-Host "solution_file=$solution_file"
-  Write-Host "local_nuget_repo=$local_nuget_repo"
-  Write-Host "remote_nuget_repo=$remote_nuget_repo"
-  Write-Host "date=$date"
-  Write-Host "target_frameworks=$target_frameworks"
-  Write-Host "version=$version"
 }
 
 task help {
@@ -50,12 +39,13 @@ task help {
 }
 
 #These are the actual build tasks. They should be Pascal case by convention
-task DevBuild -depends SetDebugBuild, emitProperties, Restore, Clean, Compile
+task DevBuild -depends SetDebugBuild, emitProperties, Clean, Restore, Compile
 task DevPack -depends DevBuild, Pack
 task DevPublish -depends DevPack, Push2Local
-task CiBuild -depends SetReleaseBuild, emitProperties, Restore, Clean, Compile
+task CiBuild -depends SetReleaseBuild, emitProperties, Clean, Restore, Compile
 task CiPack -depends CiBuild, Pack
 task CiPublish2Nuget -depends CiPack, Push2Nuget
+task CiPublish2Myget -depends CiPack, Push2Myget
 
 task SetDebugBuild {
     $script:project_config = "Debug"
@@ -68,74 +58,66 @@ task SetReleaseBuild {
 task Restore {
     Write-Host "******************* Now restoring the solution dependencies *********************"
     exec { 
-        & $dotnet_exe msbuild /t:restore $solution_file /v:m /p:NuGetInteractive="true"
+        dotnet msbuild /t:restore $solution_file /v:m /p:NuGetInteractive="true"
     }
 }
 
-task Clean -depends Restore{
-    Write-Host "******************* Now cleaning the solution and artifacts *********************"  -ForegroundColor Green
+task Clean {
+    Write-Host "******************* Now cleaning the solution and artifacts *********************"
     if (Test-Path $publish_dir) {
         delete_directory $publish_dir
     }
-    exec {
-        & $dotnet_exe msbuild /t:clean /v:m /p:Configuration=$project_config $solution_file
+    exec { 
+        dotnet msbuild /t:clean /v:m /p:Configuration=$project_config $solution_file 
     }
 }
 
 task Compile {
-    Write-Host "******************* Now compiling the solution *********************"  -ForegroundColor Green
-    exec {
-        & $dotnet_exe msbuild /t:build /v:m /p:Configuration=$project_config /nologo /p:Platform="Any CPU" /nologo $solution_file
+    Write-Host "******************* Now compiling the solution *********************"
+    exec { 
+        dotnet msbuild /t:build /v:m /p:Configuration=$project_config /nologo /p:Platform="Any CPU" /nologo $solution_file 
     }
 }
 
- task Pack -depends Compile{
+task Pack {
     Write-Host "******************* Now creating nuget package(s) *********************"
-	Push-Location $base_dir
-	$projects = @(Get-ChildItem -Recurse -Filter "*.csproj" | Where-Object {$_.Directory -like '*src*'}).FullName	
+	$projects = @(Get-ChildItem -Recurse -Filter "*.csproj" -Path $base_dir | Where-Object {$_.Directory -like '*src*'}).FullName	
 
 	foreach ($project in $projects) {
 		Write-Host "Executing nuget pack on the project: $project"
 		exec { 
-            & $dotnet_exe msbuild /t:pack /v:m $project /p:OutputPath=$publish_dir /p:Configuration=$project_config
+            dotnet msbuild /t:pack /v:m $project /p:OutputPath=$publish_dir /p:Configuration=$project_config
         }
 	}
-
-	Pop-Location
 }
 
-task Push2Local -depends Pack {
+task Push2Local {
     Write-Host "******************* Now pushing available nuget package(s) to $local_nuget_repo *********************"
-	Push-Location $base_dir
-	$packages = @(Get-ChildItem -Recurse -Filter "*.nupkg" | Where-Object {$_.Directory -like "*publish-artifacts*"}).FullName
-
-    if (Test-Path $local_nuget_repo) {
-        Write-Host "Repo $local_nuget_repo already exists"
-    }
-    else {
-        create_directory $local_nuget_repo
-    }
-
+    $packages = @(Get-ChildItem -Recurse -Filter "*.nupkg" -Path $publish_dir).FullName
 	foreach ($package in $packages) {
 		Write-Host "Executing nuget add for the package: $package"
-		exec { & $dotnet_exe nuget push $package -s $local_nuget_repo}
-        Write-Host "Warning: Possible overwrite of existing package $package, possible solution is to clear the cache(S)" -ForegroungColor Yellow
+		exec { dotnet nuget push $package --source $local_nuget_repo }
 	}
-
-	Pop-Location
 }
 
 task Push2Nuget {
     Write-Host "******************* Now pushing available nuget package(s) to nuget.org *********************"
-	Push-Location $base_dir
-	$packages = @(Get-ChildItem -Recurse -Filter "*.nupkg" | Where-Object {$_.Directory -like "*publish-artifacts*"}).FullName
+	$packages = @(Get-ChildItem -Recurse -Filter "*.nupkg" -Path $publish_dir).FullName
 
 	foreach ($package in $packages) {
 		Write-Host "Executing nuget push for the package: $package"
-		exec { & $dotnet_exe nuget push $package -s $remote_nuget_repo -k $api_key}
+		exec { dotnet nuget push $package --source $remote_nuget_repo --api-key $api_key}
 	}
+}
 
-	Pop-Location
+task Push2Myget {
+    Write-Host "******************* Now pushing available nuget package(s) to myget.org *********************"
+	$packages = @(Get-ChildItem -Recurse -Filter "*.nupkg" -Path $publish_dir).FullName
+
+	foreach ($package in $packages) {
+		Write-Host "Executing nuget push for the package: $package"
+		exec { dotnet nuget push $package --source $remote_myget_repo --api-key $api_key}
+	}
 }
 
 # -------------------------------------------------------------------------------------------------------------
@@ -185,19 +167,6 @@ function global:delete_directory($directory_name)
   rd $directory_name -recurse -force  -ErrorAction SilentlyContinue | out-null
 }
 
-function global:create_directory($directory_name)
-{
-  mkdir $directory_name -force -ErrorAction SilentlyContinue | out-null
+function global:delete_files($directory_name) {
+    Get-ChildItem -Path $directory_name -Include * -File -Recurse | foreach { $_.Delete()}
 }
-
-function global:get-dotnet(){
-	return (Get-Command dotnet).Path
-}
-
-function global:get_version()
-{
-    & $dotnet_exe tool install --global GitVersion.Tool
-    return exec { gitversion /output json /showvariable FullSemVer }
-}
-
-

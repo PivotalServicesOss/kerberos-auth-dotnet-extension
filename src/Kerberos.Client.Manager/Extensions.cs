@@ -1,4 +1,4 @@
-// Original copied from https://github.com/macsux/kerberos-buildpack/tree/main/src/KerberosSidecar
+// Original file https://github.com/macsux/kerberos-buildpack/tree/main/src/KerberosSidecar
 
 using Kerberos.NET;
 using Kerberos.NET.Client;
@@ -10,7 +10,7 @@ using Kerberos.NET.Configuration;
 using Microsoft.FeatureManagement;
 using Kerberos.NET.Crypto;
 
-namespace Kerberos.Client.Manager;
+namespace PivotalServices.Kerberos.Client.Manager;
 
 public static class Extensions
 {
@@ -48,8 +48,8 @@ public static class Extensions
                 Krb5Config config;
                 if (options.GenerateKrb5)
                 {
-                    logger.LogWarning($"No krb5.conf exists - generating the defaults may not work for your specific environment, in that case better to provide your own {options.KeytabFile} file...");
-                    logger.LogInformation($"No krb5.conf exists - generating {options.KeytabFile} using defaults...");
+                    logger.LogWarning($"No krb5.conf exists - generating the defaults may not work for your specific environment, in that case better to provide your own {options.Kerb5ConfigFile} file...");
+                    logger.LogInformation($"No krb5.conf exists - generating {options.Kerb5ConfigFile} using defaults...");
                     config = Krb5Config.Default();
                     string realm;
                     try
@@ -94,6 +94,8 @@ public static class Extensions
                     config.Defaults.PreferredPreAuthTypes.Add(PaDataType.PA_SVR_REFERRAL_INFO);
                     config.Defaults.PreferredPreAuthTypes.Add(PaDataType.PA_ETYPE_INFO2);
                     config.Defaults.PreferredPreAuthTypes.Add(PaDataType.PA_PK_AS_REP);
+                    config.Defaults.PreferredPreAuthTypes.Add(PaDataType.PA_PK_AS_REQ);
+                    config.Defaults.PreferredPreAuthTypes.Add(PaDataType.PA_ENC_TIMESTAMP);
                 }
                 else
                 {

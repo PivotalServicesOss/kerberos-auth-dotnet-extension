@@ -5,7 +5,7 @@
     <ImplicitUsings>enable</ImplicitUsings>
     <Nullable>disable</Nullable>
     <OutputType>Library</OutputType>
-    <RootNamespace>Kerberos.Client.Manager</RootNamespace>
+    <RootNamespace>PivotalServices.Kerberos.Client.Manager</RootNamespace>
     <DebugType>Embedded</DebugType>
     <EmbedAllSources>true</EmbedAllSources>
     <UpdateAssemblyInfo>true</UpdateAssemblyInfo>
@@ -16,23 +16,23 @@
   </PropertyGroup>
 
   <PropertyGroup>
-    <PackageId>Kerberos.Client.Manager</PackageId>
-    <Title>Kerberos.Client.Manager</Title>
+    <PackageId>PivotalServices.Kerberos.Client.Manager</PackageId>
+    <Title>PivotalServices.Kerberos.Client.Manager</Title>
     <Version>1.0.0</Version>
-    <Authors>ajaganathan</Authors>
-    <Company>VMware</Company>
+    <Authors>ajaganathan,PivotalServicesOss</Authors>
+    <Company>PivotalServicesOss</Company>
     <PackageRequireLicenseAcceptance>true</PackageRequireLicenseAcceptance>
     <PackageLicenseExpression>MIT</PackageLicenseExpression>
     <Copyright>All rights reserved.</Copyright>
-    <RepositoryUrl>https://github.com/alfusinigoj/kerberos-auth-dotnet-extension.git</RepositoryUrl>
+    <RepositoryUrl>https://github.com/PivotalServicesOss/kerberos-auth-dotnet-extension.git</RepositoryUrl>
     <RepositoryType>git</RepositoryType>
-    <PackageTags>ASP.NET;Handlers;IoC;Autofac;Unity</PackageTags>
+    <PackageTags>.NET;Kerberos;PivotalServicesOss</PackageTags>
     <Description>A simple library to add kerberos auth for a dotnet app running in a linux container that is not domain joined</Description>
-    <PackageProjectUrl>https://github.com/alfusinigoj/kerberos-auth-dotnet-extension</PackageProjectUrl>
+    <PackageProjectUrl>https://github.com/PivotalServicesOss/kerberos-auth-dotnet-extension</PackageProjectUrl>
   </PropertyGroup>
 
   <ItemGroup>
-    <PackageReference Include="Kerberos.NET" Version="4.5.155" />
+    <PackageReference Include="Kerberos.NET" Version="4.6.1" />
     <PackageReference Include="Microsoft.Extensions.Options" Version="6.0.0" />
     <PackageReference Include="Microsoft.Extensions.Logging" Version="6.0.0" />
     <PackageReference Include="Microsoft.Extensions.Configuration" Version="6.0.0" />
@@ -46,5 +46,10 @@
       <PrivateAssets>All</PrivateAssets>
     </PackageReference>
   </ItemGroup>
+
+  <Target Name="RemoveBases" AfterTargets="Clean">
+    <RemoveDir Directories="$(BaseOutputPath)" />
+    <RemoveDir Directories="$(BaseIntermediateOutputPath)" /> 
+  </Target>
 
 </Project>

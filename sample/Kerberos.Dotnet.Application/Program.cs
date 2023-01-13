@@ -1,18 +1,21 @@
-using Kerberos.Client.Manager;
+using PivotalServices.Kerberos.Client.Manager;
 using Microsoft.AspNetCore.Authentication.Negotiate;
-using Steeltoe.Common;
 using Microsoft.FeatureManagement;
 
 var builder = WebApplication.CreateBuilder(args);
 
-builder.Services.AddFeatureManagement(configuration);
+builder.Services.AddFeatureManagement(builder.Configuration);
+// To enable kerberos based authentication
 builder.Services.AddKerberosClientManagement(builder.Configuration);
 
+// Ingress Auth - Negotiate
 builder.Services.AddAuthentication(NegotiateDefaults.AuthenticationScheme).AddNegotiate();
 
 builder.Services.AddControllers();
 builder.Services.AddEndpointsApiExplorer();
+
 builder.Services.AddSwaggerGen(options => {
+    // Helps to enable or disable diagnostic endpoints
     options.DocumentFilter<KerberosDiagnosticsDocumentFilter>();
 });
 

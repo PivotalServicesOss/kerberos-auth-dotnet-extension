@@ -15,6 +15,12 @@ $imageTag = "1.0.0-$versionSuffix"
 $fullImageName = "$($imageName):$($imageTag)"
 $fullImageTag = "$registry/$fullImageName"
 
-pack build $imageName --tag $fullImageTag --buildpack paketo-buildpacks/dotnet-core --builder paketobuildpacks/builder:full --env BP_DOTNET_PROJECT_PATH=$applicationPath --env BP_DOTNET_PUBLISH_FLAGS="--verbosity=normal --self-contained=true" --volume $PWD/bindings:/platform/bindings --volume /Users/ajaganathan/.nugetrepo:/platform/nugetrepo:ro
+pack build $imageName --tag $fullImageTag `
+                      --buildpack paketo-buildpacks/dotnet-core `
+                      --builder paketobuildpacks/builder:full `
+                      --env BP_DOTNET_PROJECT_PATH=$applicationPath `
+                      --env BP_DOTNET_PUBLISH_FLAGS="--verbosity=normal --self-contained=true" `
+                      --volume $PWD/bindings:/platform/bindings `
+                      --volume /Users/ajaganathan/.nugetrepo:/platform/nugetrepo:ro
 
 docker push $fullImageTag

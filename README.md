@@ -39,7 +39,7 @@ A simple library to add kerberos auth capabilities (mentioned below) for a dotne
 
     ```xml
     <ItemGroup>
-        <PackageReference Include="Kerberos.Client.Manager" Version="1.0.0" />
+        <PackageReference Include="PivotalServices.Kerberos.Client.Manager" Version="1.0.2" />
     </ItemGroup>
     ```
 
@@ -47,7 +47,7 @@ A simple library to add kerberos auth capabilities (mentioned below) for a dotne
 
     ```c#
     using Microsoft.FeatureManagement;
-    using Kerberos.Client.Manager;
+    using PivotalServices.Kerberos.Client.Manager;
     ...
     builder.Services.AddFeatureManagement(configuration);
     builder.Services.AddKerberosClientManagement(builder.Configuration);
@@ -55,7 +55,7 @@ A simple library to add kerberos auth capabilities (mentioned below) for a dotne
 1. Add the below code to the application's `startup/program.cs`, which remove swagger documentation of diagnostics controller, when environment variable `KRB_ENABLE_DIAGNOSTICS_ENDPOINTS` is set to false.
 
     ```c#
-    using Kerberos.Client.Manager;
+    using PivotalServices.Kerberos.Client.Manager;
     ...
     builder.Services.AddSwaggerGen(options => {
         options.DocumentFilter<KerberosDiagnosticsDocumentFilter>();
