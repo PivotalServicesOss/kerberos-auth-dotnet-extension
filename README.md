@@ -2,6 +2,10 @@
 
 A simple library to add kerberos auth capabilities (mentioned below) for a dotnet app running in a non domain joined linux container. Most of the code is copied from Andrew Stackhov's [Kerberos Buildpack](https://github.com/macsux/kerberos-buildpack) repo, and thanks to Andrew for all the research and code he had done for this. 
 
+Build | PivotalServices.Kerberos.Client.Manager |
+--- | --- |
+[![Nuget Pipeline](https://github.com/PivotalServicesOss/kerberos-auth-dotnet-extension/actions/workflows/nuget-pipeline.yml/badge.svg?branch=main)](https://github.com/PivotalServicesOss/kerberos-auth-dotnet-extension/actions/workflows/nuget-pipeline.yml) | [![NuGet](https://img.shields.io/nuget/v/PivotalServices.Kerberos.Client.Manager.svg?style=flat-square)](http://www.nuget.org/packages/PivotalServices.Kerberos.Client.Manager)
+
 ### Features
 
 1. Create kerberos configuration file, if not exists (preferable to use an existing one instead of defaults)
@@ -124,3 +128,5 @@ SetSpn -L <domain\service_account_name>
 ## Other things that I had to do in my labs environment
 
 1. Modified the service account to accept multiple encryption (AES128 and AES256) following the [article](https://learn.microsoft.com/en-us/archive/blogs/openspecification/windows-configurations-for-kerberos-supported-encryption-type) section `2. Computer Account Encryption Type Setting`. This solved `kerberos encryption not supported` error while trying to pre-auth.
+
+## Kindly raise any issues at [Project Issues](https://github.com/PivotalServicesOss/rabbitmq_messaging_library/issues)
