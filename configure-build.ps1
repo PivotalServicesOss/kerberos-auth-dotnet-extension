@@ -1,8 +1,17 @@
-$current_dir = resolve-path .
+# pull dependencies
+
+$has_nuget = Get-PackageProvider -ListAvailable | Out-String | Select-String -Pattern "NuGet" -Quiet
+if(-Not($has_nuget)) {
+    #install Nuget Package Provider
+    [System.Net.WebRequest]::DefaultWebProxy.Credentials = [System.Net.CredentialCache]::DefaultCredentials
+    Write-Host "No Nuget Package Provider Found: Installing now" -ForegroundColor Red
+    Install-PackageProvider -Name NuGet -MinimumVersion 5.3.1.6268 -Force
+}
+
 $has_psake = Get-Module -ListAvailable | Select-String -Pattern "Psake" -Quiet
 if(-Not($has_psake)) {
-    #import psake
-    $module = Join-Path $current_dir -Child "tools/psake.4.9.0/psake.psm1"
-    Write-Host "Importing module $module"
-    Import-Module $module -Scope Global 
+    #install psake
+    Write-Host "No Psake Module Found: Installing now" -ForegroundColor Red
+    Set-PSRepository -Name PSGallery -InstallationPolicy Trusted
+    Install-Module Psake -Scope CurrentUser
 }

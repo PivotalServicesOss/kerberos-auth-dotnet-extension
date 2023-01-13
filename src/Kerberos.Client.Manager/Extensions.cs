@@ -1,4 +1,4 @@
-// Original copied from https://github.com/macsux/kerberos-buildpack/tree/main/src/KerberosSidecar
+// Original file https://github.com/macsux/kerberos-buildpack/tree/main/src/KerberosSidecar
 
 using Kerberos.NET;
 using Kerberos.NET.Client;
@@ -8,8 +8,9 @@ using Kerberos.NET.Transport;
 using Microsoft.Extensions.Options;
 using Kerberos.NET.Configuration;
 using Microsoft.FeatureManagement;
+using Kerberos.NET.Crypto;
 
-namespace Kerberos.Client.Manager;
+namespace PivotalServices.Kerberos.Client.Manager;
 
 public static class Extensions
 {
@@ -34,23 +35,21 @@ public static class Extensions
                 if (options.ApplicationHostName == null)
                     logger.LogWarning("Service/Application hostname is not set. Use APP_HOSTNAME environmental variable to configure windows ingress authentication");
 
-                var homeDir = Environment.GetFolderPath(Environment.SpecialFolder.UserProfile);
-                var userKerbDir = Path.Combine(homeDir, ".krb5");
-
-                // default files to user's ~/.krb/ folder if not set
-                options.Kerb5ConfigFile ??= Path.Combine(userKerbDir, "krb5.conf");
-                options.KeytabFile ??= Path.Combine(userKerbDir, "krb5.keytab");
-                options.CacheFile ??= Path.Combine(userKerbDir, "krb5cc");
                 options.GenerateKrb5 = options.Kerb5ConfigFile == null! || !File.Exists(options.Kerb5ConfigFile);
 
                 Directory.CreateDirectory(Path.GetDirectoryName(options.Kerb5ConfigFile)!);
                 Directory.CreateDirectory(Path.GetDirectoryName(options.KeytabFile)!);
                 Directory.CreateDirectory(Path.GetDirectoryName(options.CacheFile)!);
 
+                logger.LogDebug($"Kerb5 Config File - {options.Kerb5ConfigFile}");
+                logger.LogDebug($"Kerb5 Keytab File - {options.KeytabFile}");
+                logger.LogDebug($"Kerb5 Cache File - {options.CacheFile}");
+
                 Krb5Config config;
                 if (options.GenerateKrb5)
                 {
-                    logger.LogInformation("No krb5.conf exists - generating");
+                    logger.LogWarning($"No krb5.conf exists - generating the defaults may not work for your specific environment, in that case better to provide your own {options.Kerb5ConfigFile} file...");
+                    logger.LogInformation($"No krb5.conf exists - generating {options.Kerb5ConfigFile} using defaults...");
                     config = Krb5Config.Default();
                     string realm;
                     try
@@ -71,13 +70,36 @@ public static class Extensions
                         config.DomainRealm.Add(realm.ToLower(), realm.ToUpper());
                         config.DomainRealm.Add($".{realm.ToLower()}", realm.ToUpper());
                     }
+
                     config.Defaults.DefaultCCacheName = options.CacheFile;
                     config.Defaults.DefaultKeytabName = options.KeytabFile;
                     config.Defaults.DefaultClientKeytabName = options.KeytabFile;
+
+                    config.Defaults.KdcTimeSync = 1;
+                    config.Defaults.CCacheType = 4;
+                    config.Defaults.Forwardable = true;
+                    config.Defaults.Proxiable = true;
+                    config.Defaults.RDNS = false;
+
+                    config.Defaults.DefaultTgsEncTypes.Add(EncryptionType.AES256_CTS_HMAC_SHA1_96);
+                    config.Defaults.DefaultTgsEncTypes.Add(EncryptionType.AES128_CTS_HMAC_SHA1_96);
+                    config.Defaults.DefaultTgsEncTypes.Add(EncryptionType.AES256_CTS_HMAC_SHA384_192);
+                    config.Defaults.DefaultTgsEncTypes.Add(EncryptionType.AES128_CTS_HMAC_SHA256_128);
+
+                    config.Defaults.DefaultTicketEncTypes.Add(EncryptionType.AES256_CTS_HMAC_SHA1_96);
+                    config.Defaults.DefaultTicketEncTypes.Add(EncryptionType.AES128_CTS_HMAC_SHA1_96);
+                    config.Defaults.DefaultTicketEncTypes.Add(EncryptionType.AES256_CTS_HMAC_SHA384_192);
+                    config.Defaults.DefaultTicketEncTypes.Add(EncryptionType.AES128_CTS_HMAC_SHA256_128);
+
+                    config.Defaults.PreferredPreAuthTypes.Add(PaDataType.PA_SVR_REFERRAL_INFO);
+                    config.Defaults.PreferredPreAuthTypes.Add(PaDataType.PA_ETYPE_INFO2);
+                    config.Defaults.PreferredPreAuthTypes.Add(PaDataType.PA_PK_AS_REP);
+                    config.Defaults.PreferredPreAuthTypes.Add(PaDataType.PA_PK_AS_REQ);
+                    config.Defaults.PreferredPreAuthTypes.Add(PaDataType.PA_ENC_TIMESTAMP);
                 }
                 else
                 {
-                    logger.LogInformation("Existing krb5.conf was detected");
+                    logger.LogInformation($"Existing {options.KeytabFile} was detected");
                     config = Krb5Config.Parse(File.ReadAllText(options.Kerb5ConfigFile!));
                 }
 

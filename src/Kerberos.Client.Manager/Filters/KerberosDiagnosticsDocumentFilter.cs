@@ -3,7 +3,7 @@ using Microsoft.FeatureManagement.Mvc;
 using Microsoft.OpenApi.Models;
 using Swashbuckle.AspNetCore.SwaggerGen;
 
-namespace Kerberos.Client.Manager;
+namespace PivotalServices.Kerberos.Client.Manager;
 
 public class KerberosDiagnosticsDocumentFilter : IDocumentFilter
 {

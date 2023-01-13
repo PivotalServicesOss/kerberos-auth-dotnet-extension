@@ -1,9 +1,9 @@
-﻿// Original copied from https://github.com/macsux/kerberos-buildpack/tree/main/src/KerberosSidecar
+﻿// Original file https://github.com/macsux/kerberos-buildpack/tree/main/src/KerberosSidecar
 
 using Kerberos.NET.Credentials;
 using Microsoft.Extensions.Options;
 
-namespace Kerberos.Client.Manager;
+namespace PivotalServices.Kerberos.Client.Manager;
 
 public class KerberosCredentialFactory
 {

@@ -7,6 +7,10 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "src", "src", "{A2020EEC-2A0
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Kerberos.Client.Manager", "src\Kerberos.Client.Manager\Kerberos.Client.Manager.csproj", "{63A8B251-00A0-4E5F-A13B-8C2538FF09F2}"
 EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "sample", "sample", "{BE3D938A-54F5-4141-9846-2B020FF47EBB}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Kerberos.Dotnet.Application", "sample\Kerberos.Dotnet.Application\Kerberos.Dotnet.Application.csproj", "{49BDBAD1-EBE8-4322-8402-3414F2E22BB0}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -20,8 +24,13 @@ Global
 		{63A8B251-00A0-4E5F-A13B-8C2538FF09F2}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{63A8B251-00A0-4E5F-A13B-8C2538FF09F2}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{63A8B251-00A0-4E5F-A13B-8C2538FF09F2}.Release|Any CPU.Build.0 = Release|Any CPU
+		{49BDBAD1-EBE8-4322-8402-3414F2E22BB0}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{49BDBAD1-EBE8-4322-8402-3414F2E22BB0}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{49BDBAD1-EBE8-4322-8402-3414F2E22BB0}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{49BDBAD1-EBE8-4322-8402-3414F2E22BB0}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(NestedProjects) = preSolution
 		{63A8B251-00A0-4E5F-A13B-8C2538FF09F2} = {A2020EEC-2A09-4E83-A355-6C7EFC598A4B}
+		{49BDBAD1-EBE8-4322-8402-3414F2E22BB0} = {BE3D938A-54F5-4141-9846-2B020FF47EBB}
 	EndGlobalSection
 EndGlobal

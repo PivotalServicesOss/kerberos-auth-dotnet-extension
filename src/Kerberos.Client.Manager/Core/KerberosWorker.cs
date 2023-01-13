@@ -1,11 +1,11 @@
-﻿// Original copied from https://github.com/macsux/kerberos-buildpack/tree/main/src/KerberosSidecar
+﻿// Original file https://github.com/macsux/kerberos-buildpack/tree/main/src/KerberosSidecar
 
 using Kerberos.NET.Client;
 using Kerberos.NET.Crypto;
 using Kerberos.NET.Entities;
 using Microsoft.Extensions.Options;
 
-namespace Kerberos.Client.Manager;
+namespace PivotalServices.Kerberos.Client.Manager;
 
 public class KerberosWorker : BackgroundService
 {
@@ -54,7 +54,6 @@ public class KerberosWorker : BackgroundService
             _logger.LogError(e, "Error initializing MIT Kerberos");
         }
     }
-
 
     private async Task CreateMitKerberosKeytab()
     {

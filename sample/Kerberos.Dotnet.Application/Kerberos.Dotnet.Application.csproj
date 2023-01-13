@@ -9,11 +9,28 @@
   <ItemGroup>
     <PackageReference Include="Microsoft.AspNetCore.Authentication.Negotiate" Version="6.0.0" />
     <PackageReference Include="Steeltoe.Common.Hosting" Version="3.2.1" />
-    <PackageReference Include="Kerberos.Client.Manager" Version="1.0.0" />
+    <!-- <PackageReference Include="PivotalServices.Kerberos.Client.Manager" Version="1.0.2-preview.1" /> -->
   </ItemGroup>
 
   <ItemGroup>
-    <None Include="appsettings.json" CopyToPublishDirectory="Always" CopyToOutputDirectory="Always" />
-    <None Include="appsettings.Development.json" CopyToPublishDirectory="Always" CopyToOutputDirectory="Always" />
+    <ProjectReference Include="..\..\src\Kerberos.Client.Manager\Kerberos.Client.Manager.csproj" />
   </ItemGroup>
+
+  <ItemGroup>
+    <Content Remove="appsettings.*.json" />
+  </ItemGroup>
+
+  <ItemGroup Condition="$(Configuration) == 'Debug'">
+    <None Include="appsettings.json" CopyToPublishDirectory="Always" CopyToOutputDirectory="Always" />
+    <None Include="appsettings.Development.json" CopyToPublishDirectory="Never" CopyToOutputDirectory="Always" />
+  </ItemGroup>
+
+  <ItemGroup Condition="$(Configuration) == 'Release'">
+    <None Include="appsettings.json" CopyToPublishDirectory="Always" CopyToOutputDirectory="Always" />
+  </ItemGroup>
+
+  <Target Name="RemoveBases" AfterTargets="Clean">
+    <RemoveDir Directories="$(BaseOutputPath)" />
+    <RemoveDir Directories="$(BaseIntermediateOutputPath)" /> 
+  </Target>
 </Project>

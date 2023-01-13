@@ -1,10 +1,10 @@
-﻿// Original copied from https://github.com/macsux/kerberos-buildpack/tree/main/src/KerberosSidecar
+﻿// Original file https://github.com/macsux/kerberos-buildpack/tree/main/src/KerberosSidecar
 
 using System.Text.RegularExpressions;
 using Kerberos.NET.Client;
 using Microsoft.Extensions.Options;
 
-namespace Kerberos.Client.Manager;
+namespace PivotalServices.Kerberos.Client.Manager;
 
 public class KerberosOptions
 {
