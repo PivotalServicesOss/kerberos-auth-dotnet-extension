@@ -9,7 +9,11 @@
   <ItemGroup>
     <PackageReference Include="Microsoft.AspNetCore.Authentication.Negotiate" Version="6.0.0" />
     <PackageReference Include="Steeltoe.Common.Hosting" Version="3.2.1" />
-    <PackageReference Include="PivotalServices.Kerberos.Client.Manager" Version="1.0.2-preview.1" />
+    <!-- <PackageReference Include="PivotalServices.Kerberos.Client.Manager" Version="1.0.2-preview.1" /> -->
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\..\src\Kerberos.Client.Manager\Kerberos.Client.Manager.csproj" />
   </ItemGroup>
 
   <ItemGroup>
